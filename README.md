@@ -18,7 +18,7 @@ files, audio, etc...
 ## Usage
 Include it in your `Cargo.toml` manifest. The following is a basic example.
 
-```
+```rust
 # build.rs
 
 // Create the filesystem.
