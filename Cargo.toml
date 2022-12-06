@@ -1,0 +1,17 @@
+[package]
+name = "rbfs"
+version = "0.1.0"
+license = "GPL-3.0"
+description = "Dead simple in-memory filesystem for packaging assets."
+homepage = "https://github.com/IsaccBarker/rbfs"
+repository = "https://github.com/IsaccBarker/rbfs"
+readme = "README.md"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rust-format = { version = "0.3.4", optional = true }
+
+[features]
+format = ["dep:rust-format"]
