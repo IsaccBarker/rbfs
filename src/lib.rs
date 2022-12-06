@@ -53,7 +53,7 @@ impl FileSystem {
     pub fn code(&self, canonicalize: bool) -> String {
         let mut code = "".to_owned();
 
-        code += "mod files {";
+        code += "pub mod files {";
         for inode in &self.index_nodes {
             match inode {
                 IndexNode::File { virtual_path, disk_path } => {
