@@ -1,4 +1,8 @@
 # Rust Build-time File System
+
+[![Crates.io](https://img.shields.io/crates/v/rbfs)](https://crates.io/crates/rbfs)
+[![Docs.rs](https://img.shields.io/docsrs/rbfs)](https://docs.rs/rbfs)
+
 RBFS is a dead simple interface for creating a virtual filesystem in memory. Once populated,
 probably in your `build.rs`, RBFS generates Rust source code which is linked into your main Rust
 program. During runtime, you can access any files you shoved into your RBFS code.
