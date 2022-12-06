@@ -69,7 +69,7 @@ impl FileSystem {
                     };
 
                     code += format!(
-                        r#"pub const FILE_{}: &str = include_str!("{}");"#,
+                        r#"pub const FILE_{}: &str = include_str!("../{}");"#,
                         virtual_path_id,
                         include_path.display(),
                     ).as_str();

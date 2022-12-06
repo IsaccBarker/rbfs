@@ -38,7 +38,7 @@ let icon = fs.add_file(PathBuf::from("icon.png"), &image_directory);
 let code = fs.code();
 
 let resources_rs = File::create(concat!(env!("CARGO_MANIFEST_DIR"), "/src/resources.rs")).unwrap();
-writeln!(resources_rs, code).unwrap();
+writeln!(resources_rs, "{}", code).unwrap();
 ```
 
 ## Authors
