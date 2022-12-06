@@ -7,6 +7,7 @@ homepage = "https://github.com/IsaccBarker/rbfs"
 repository = "https://github.com/IsaccBarker/rbfs"
 readme = "README.md"
 edition = "2021"
+exclude = ["puppy.png"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -15,3 +16,4 @@ rust-format = { version = "0.3.4", optional = true }
 
 [features]
 format = ["dep:rust-format"]
+
