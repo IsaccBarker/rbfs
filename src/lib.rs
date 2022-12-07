@@ -62,8 +62,11 @@ impl FileSystem {
                 IndexNode::File { virtual_path, disk_path, binary } => {
                     let virtual_path_id = format!("{}", virtual_path.display())
                         .as_str()
-                        .replace(".", "_")
-                        .replace("/", "_")
+                        .chars()
+                        .map(|c| {
+                            if c.is_alphanumeric() { c } else { '_' }
+                        })
+                        .collect::<String>()
                         .to_uppercase();
 
                     let include_path = match canonicalize {
