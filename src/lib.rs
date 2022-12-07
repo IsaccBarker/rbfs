@@ -72,8 +72,9 @@ impl FileSystem {
                     };
 
                     code += format!(
-                        r#"pub const FILE_{}: &str = include_{}!("../{}");"#,
+                        r#"pub const FILE_{}: {} = include_{}!("../{}");"#,
                         virtual_path_id,
+                        if *binary { "&[u8]" } else { "&str" },
                         if *binary { "bytes" } else { "str" },
                         include_path.display(),
                     ).as_str();
