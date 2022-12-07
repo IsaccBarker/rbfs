@@ -9,7 +9,8 @@ pub struct FileSystem {
 pub enum IndexNode {
     File {
         virtual_path: Box<Path>,
-        disk_path: Box<Path>
+        disk_path: Box<Path>,
+        binary: bool,
     }
 }
 
@@ -29,7 +30,8 @@ impl FileSystem {
     ///
     /// * `disk_path` - Path to file on the hosts system.
     /// * `virtual_path` - Internal path representation.
-    pub fn add_file(&mut self, disk_path: PathBuf, virtual_path: &PathBuf) -> Option<usize> {
+    /// * `as_bytes` - Should the file be loaded into a byte array?
+    pub fn add_file(&mut self, disk_path: PathBuf, virtual_path: &PathBuf, as_bytes: bool) -> Option<usize> {
         let mut virtual_path = virtual_path.clone();
         virtual_path.push("foo");
         virtual_path.set_file_name(
@@ -38,6 +40,7 @@ impl FileSystem {
         let index_node = IndexNode::File{
             virtual_path: Box::from(virtual_path),
             disk_path: Box::from(disk_path),
+            binary: as_bytes,
         };
 
         if self.index_nodes.contains(&index_node) {
@@ -56,7 +59,7 @@ impl FileSystem {
         code += "pub mod files {";
         for inode in &self.index_nodes {
             match inode {
-                IndexNode::File { virtual_path, disk_path } => {
+                IndexNode::File { virtual_path, disk_path, binary } => {
                     let virtual_path_id = format!("{}", virtual_path.display())
                         .as_str()
                         .replace(".", "_")
@@ -69,8 +72,9 @@ impl FileSystem {
                     };
 
                     code += format!(
-                        r#"pub const FILE_{}: &str = include_str!("../{}");"#,
+                        r#"pub const FILE_{}: &str = include_{}!("../{}");"#,
                         virtual_path_id,
+                        if *binary { "bytes" } else { "str" },
                         include_path.display(),
                     ).as_str();
                 }

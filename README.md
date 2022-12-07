@@ -32,7 +32,9 @@ image_directory.push("assets");
 image_directory.push("imgs");
 
 // Refering to an icon.png, which will be included via include_bytes! at preprocess time.
-let icon = fs.add_file(PathBuf::from("icon.png"), &image_directory);
+// If you want the file to be loaded as a string, change the true to a false to denote
+// it's existing as being a binary file.
+let icon = fs.add_file(PathBuf::from("icon.png"), &image_directory, true);
 
 // Generate the Rust code.
 let code = fs.code();
