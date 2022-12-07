@@ -11,13 +11,13 @@ pub enum IndexNode {
         virtual_path: Box<Path>,
         disk_path: Box<Path>,
         binary: bool,
-    }
+    },
 }
 
 impl FileSystem {
     pub fn new() -> Self {
         Self {
-            index_nodes: vec![]
+            index_nodes: vec![],
         }
     }
 
@@ -30,14 +30,30 @@ impl FileSystem {
     ///
     /// * `disk_path` - Path to file on the hosts system.
     /// * `virtual_path` - Internal path representation.
+    /// * `virtual_is_file` - If [`virtual_path`] contains a filename.
     /// * `as_bytes` - Should the file be loaded into a byte array?
-    pub fn add_file(&mut self, disk_path: PathBuf, virtual_path: &PathBuf, as_bytes: bool) -> Option<usize> {
+    pub fn add_file(
+        &mut self,
+        disk_path: PathBuf,
+        virtual_path: &PathBuf,
+        virtual_is_file: bool,
+        as_bytes: bool,
+    ) -> Option<usize> {
         let mut virtual_path = virtual_path.clone();
-        virtual_path.push("foo");
-        virtual_path.set_file_name(
-            disk_path.file_name().unwrap().to_os_string().into_string().unwrap());
 
-        let index_node = IndexNode::File{
+        if !virtual_is_file {
+            virtual_path.push("foo");
+            virtual_path.set_file_name(
+                disk_path
+                    .file_name()
+                    .unwrap()
+                    .to_os_string()
+                    .into_string()
+                    .unwrap(),
+            );
+        }
+
+        let index_node = IndexNode::File {
             virtual_path: Box::from(virtual_path),
             disk_path: Box::from(disk_path),
             binary: as_bytes,
@@ -59,13 +75,15 @@ impl FileSystem {
         code += "pub mod files {";
         for inode in &self.index_nodes {
             match inode {
-                IndexNode::File { virtual_path, disk_path, binary } => {
+                IndexNode::File {
+                    virtual_path,
+                    disk_path,
+                    binary,
+                } => {
                     let virtual_path_id = format!("{}", virtual_path.display())
                         .as_str()
                         .chars()
-                        .map(|c| {
-                            if c.is_alphanumeric() { c } else { '_' }
-                        })
+                        .map(|c| if c.is_alphanumeric() { c } else { '_' })
                         .collect::<String>()
                         .to_uppercase();
 
@@ -81,7 +99,8 @@ impl FileSystem {
                         if *binary { "bytes" } else { "str" },
                         if canonicalize { "" } else { "../" },
                         include_path.display(),
-                    ).as_str();
+                    )
+                    .as_str();
                 }
             }
         }
@@ -100,8 +119,8 @@ impl FileSystem {
 
 #[cfg(test)]
 mod tests {
-    use std::path::PathBuf;
     use crate::FileSystem;
+    use std::path::PathBuf;
 
     #[test]
     fn functionality() {
@@ -111,9 +130,21 @@ mod tests {
         image_directory.push("assets");
         image_directory.push("imgs");
 
-        let puppy = fs.add_file(PathBuf::from("puppy.png"), &image_directory);
+        let puppy = fs.add_file(PathBuf::from("puppy.png"), &image_directory, false, true);
 
-        panic!("{}", fs.code(false));
+        // panic!("{}", fs.code(false));
+    }
+
+    #[test]
+    fn exploration() {
+        let mut fs = FileSystem::new();
+        let puppy = fs.add_file(
+            PathBuf::from("puppy.png"),
+            &PathBuf::from("dog.png"),
+            true,
+            true,
+        );
+
+        // panic!("{}", fs.code(false));
     }
 }
-
